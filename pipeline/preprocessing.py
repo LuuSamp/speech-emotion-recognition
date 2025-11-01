@@ -3,8 +3,18 @@ import librosa
 import numpy as np
 
 class PreprocessingStrategy(ABC):
+    """Abstract class for the Preprocessing to be executed before the data is given to the model
+    """
     @abstractmethod
-    def preprocess(self, audio_data):
+    def preprocess(self, audio_data: np.ndarray) -> np.ndarray:
+        """Preprocess audio data for model input.
+
+        Args:
+            audio_data (np.ndarray): Audio data to preprocess.
+
+        Returns:
+            np.ndarray: Preprocessed audio data.
+        """
         pass
 
 

@@ -1,7 +1,13 @@
+*/dataset/
+*/MFCC_features/
+*/multimodal_data/
+./*.keras
+
 dataset/
 MFCC_features/
 multimodal_data/
-*.keras
+./*.keras
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
