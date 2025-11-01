@@ -72,13 +72,24 @@ class MelSpectrogramPreprocessing(PreprocessingStrategy):
         return mel_frames
     
 class MFCCPreprocessing(PreprocessingStrategy):
-    def __init__(self, sample_rate=16000, n_mfcc=40, max_length=3):
+    def __init__(self, sample_rate=16000, n_mfcc=40, max_length_sec=3):
         self.sample_rate = sample_rate
         self.n_mfcc = n_mfcc
-        self.max_length = max_length
+        self.max_length_sec = max_length_sec
 
-    def _extract_mfcc(self, audio_data, sample_rate=16000, n_mfcc=40, max_length=3):
-        y = librosa.util.fix_length(audio_data, size=sample_rate * max_length)
+    def _extract_mfcc(self, audio_data, sample_rate=16000, n_mfcc=40, max_length_sec=3):
+        if audio_data.dtype != np.float32 or audio_data.max() > 1.0:
+            y = audio_data.astype(np.float32)
+        else:
+            y = np.array(audio_data, dtype=np.float32)
+            
+        if np.abs(y).max() > 1.0: 
+            y = y / np.max(np.abs(y))
+        
+        if y.ndim > 1:
+            y = librosa.to_mono(y)
+        
+        y = librosa.util.fix_length(y, size=sample_rate * max_length_sec)
         mfccs = librosa.feature.mfcc(y=y, sr=sample_rate, n_mfcc=n_mfcc)
         mfccs_mean = np.mean(mfccs.T, axis=0)
         
@@ -88,4 +99,5 @@ class MFCCPreprocessing(PreprocessingStrategy):
         audio_np = np.array(audio_data, dtype=np.float32)
         mfcc_features = self._extract_mfcc(audio_np, sample_rate=self.sample_rate, n_mfcc=self.n_mfcc)
         mfcc_features = mfcc_features.reshape(1, -1, 1)  # Ajusta para (1, n_mfcc, 1)
+        # mfcc_features = mfcc_features[..., np.newaxis]
         return mfcc_features

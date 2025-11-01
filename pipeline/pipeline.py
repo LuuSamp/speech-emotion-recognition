@@ -12,7 +12,7 @@ CHUNK_SIZE = int(SAMPLE_RATE * CHUNK_DURATION_MS / 1000)
 BUFFER_DURATION_SEC = 3  # buffer duration for classification (3 seconds)
 BUFFER_SIZE = int(SAMPLE_RATE * BUFFER_DURATION_SEC)
 
-emotion_labels = [
+emotion_labels_ravdess = [
     "angry",
     "disgust",
     "fearful",
@@ -30,11 +30,11 @@ def is_high_energy(audio_segment, thresh=energy_threshold):
     return energy > thresh
 
 # VAD setup
-vad = webrtcvad.Vad(2)
+vad = webrtcvad.Vad(2) # Aggressiveness mode (0-3)
 
 audio_buffer = deque(maxlen=BUFFER_SIZE)
 
-def classify_emotion(model, audio_data, strategy: PreprocessingStrategy = None):
+def classify_emotion(model, audio_data, strategy: PreprocessingStrategy = None, emotion_labels=emotion_labels_ravdess):
     """Classify emotion from audio data using the provided model and preprocessing strategy."""
     if strategy:
         x = strategy.preprocess(audio_data)
@@ -51,7 +51,7 @@ def classify_emotion(model, audio_data, strategy: PreprocessingStrategy = None):
     return emotion, confidence
 
 
-def real_time_emotion_recognition(model, strategy: PreprocessingStrategy = None):
+def real_time_emotion_recognition(model, strategy: PreprocessingStrategy = None, emotion_labels = emotion_labels_ravdess):
     """Real-time emotion recognition pipeline"""
     p = pyaudio.PyAudio()
 
@@ -97,7 +97,7 @@ def real_time_emotion_recognition(model, strategy: PreprocessingStrategy = None)
                 audio_segment = np.array(list(audio_buffer)[-BUFFER_SIZE:])
                 
                 # Classify emotion
-                emotion, confidence = classify_emotion(model, audio_segment, strategy)
+                emotion, confidence = classify_emotion(model, audio_segment, strategy, emotion_labels=emotion_labels)
                 
                 print(f"✅ Emotion detected: {emotion} (confidence: {confidence:.2%})")
                 print("-" * 50)
