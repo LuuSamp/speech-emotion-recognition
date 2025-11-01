@@ -1,3 +1,8 @@
+dataset/
+MFCC_features/
+multimodal_data/
+*.keras
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

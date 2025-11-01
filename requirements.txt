@@ -1,0 +1,10 @@
+kagglehub
+numpy
+pandas
+librosa
+matplotlib
+resampy
+tensorflow
+joblib
+pyaudio
+webrtcvad
