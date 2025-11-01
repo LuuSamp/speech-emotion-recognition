@@ -23,7 +23,6 @@ The example models provided were trained on the RAVDESS dataset using notebooks 
   - `pipeline/pipeline.py` — microphone capture, VAD, buffering and inference loop
   - `pipeline/preprocessing.py` — `PreprocessingStrategy`, `MelSpectrogramPreprocessing`, `MFCCPreprocessing`
 - `requirements.txt` — Python dependencies
-- `dataset/` — datasets used or referenced (e.g. RAVDESS, emotions-on-audio-dataset)
 - `notebooks/` — experiments and training exploration. Datasets used are mentioned at the start of the notebooks(e.g. `cnn-lstm.ipynb`)
 - `models/` — example pre-trained model files (may be present in repo root)
 
