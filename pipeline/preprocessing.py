@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import List
 import librosa
 import numpy as np
 
@@ -111,3 +112,23 @@ class MFCCPreprocessing(PreprocessingStrategy):
         mfcc_features = mfcc_features.reshape(1, -1, 1)  # Ajusta para (1, n_mfcc, 1)
         # mfcc_features = mfcc_features[..., np.newaxis]
         return mfcc_features
+    
+    
+class PreprocessingQueue(PreprocessingStrategy):
+    """Concurrent preprocessing given a list of strategies
+    
+    Args:
+        preprocessors (List[PreprocessingStrategy]): List of PreprocessingStrategy instances to be applied in sequence
+    """
+    def __init__(self, preprocessors: List[PreprocessingStrategy]):
+        """Initialize the preprocessing queue with a list of strategies.
+
+        Args:
+            preprocessors (List[PreprocessingStrategy]): List of PreprocessingStrategy instances to be applied in sequence
+        """
+        self.preprocessors = preprocessors
+
+    def preprocess(self, audio_data):
+        for preprocessor in self.preprocessors:
+            audio_data = preprocessor.preprocess(audio_data)
+        return audio_data
